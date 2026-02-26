@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PianginaCUP</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">PC</div>
+  <h1>PianginaCUP</h1>
+</header>
+
+<main class="container">
+  <div class="controls">
+    <select id="managerSelect"><option>Caricamento…</option></select>
+    <select id="moduleSelect">
+      <option value="343">3-4-3</option>
+      <option value="352">3-5-2</option>
+      <option value="433">4-3-3</option>
+      <option value="442">4-4-2</option>
+      <option value="451">4-5-1</option>
+      <option value="532">5-3-2</option>
+      <option value="541">5-4-1</option>
+    </select>
+    <div class="auto-right">
+      <button id="resetBtn" class="reset-btn">Reset</button>
+      <button id="openModalBtn">Visualizza / Copia</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="column">
+      <h2>La tua Rosa</h2>
+      <div id="roster" class="roster-list" aria-live="polite"></div>
+    </section>
+
+    <section class="column">
+      <div class="mt-8 font-600">Titolari <span id="starterCount" style="color:var(--muted)">(0/11)</span></div>
+      <div class="slot-grid" id="startersSlots" aria-live="polite">
+        <!-- Slot titolari (in base al modulo) -->
+      </div>
+
+      <div class="mt-12 font-600">Panchina <span id="benchCount" style="color:var(--muted)">(0/11)</span></div>
+      <div class="slot-grid">
+        <div id="slot-GK1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#e6b800">P</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-GK2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#e6b800">P</div><div class="player-meta">vuoto</div></div></div>
+
+        <div id="slot-D1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#007bff">D</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-D2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#007bff">D</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-D3" class="slot empty"><div class="slot-content"><div class="badge" style="background:#007bff">D</div><div class="player-meta">vuoto</div></div></div>
+
+        <div id="slot-C1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#28a745">C</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-C2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#28a745">C</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-C3" class="slot empty"><div class="slot-content"><div class="badge" style="background:#28a745">C</div><div class="player-meta">vuoto</div></div></div>
+
+        <div id="slot-A1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#dc3545">A</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-A2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#dc3545">A</div><div class="player-meta">vuoto</div></div></div>
+        <div id="slot-A3" class="slot empty"><div class="slot-content"><div class="badge" style="background:#dc3545">A</div><div class="player-meta">vuoto</div></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Mobile Layout -->
+  <div id="mobileLayout" style="display:none">
+    <div class="mobile-section">
+      <h2 class="mobile-title">Titolari <span id="mobileStarterCount" style="color:var(--muted)">(0/11)</span></h2>
+      <div class="slot-grid" id="mobileStartersSlots"></div>
+    </div>
+    <div class="mobile-section">
+      <h2 class="mobile-title">Panchina <span id="mobileBenchCount" style="color:var(--muted)">(0/11)</span></h2>
+      <div class="slot-grid" id="mobileBenchSlots"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="outputModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Formazione pronta</h3>
+    <p style="color:var(--muted)">Copia il testo o incollalo su WhatsApp/Docs.</p>
+    <textarea id="outputText" readonly style="width:100%;height:220px;border-radius:10px;border:1px solid #eee;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,'Courier New',monospace"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap">
+      <button id="selectAllBtn" style="display:none">Seleziona tutto</button>
+      <button id="copyModalBtn">Copia</button>
+      <button id="closeModalBtn">Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal scelta portiere -->
+<div id="gkChoiceModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Scegli il portiere</h3>
+    <p style="color:var(--muted)">Blocco: <span id="gkBlockName" style="font-weight:bold"></span></p>
+    <div id="gkChoices" style="display:flex;gap:10px;justify-content:center;margin:20px 0"></div>
+    <button onclick="closeGkModal()" style="padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Annulla</button>
+  </div>
+</div>
+
+<!-- Slot Picker Modal (mobile) -->
+<div id="slotPickerModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Seleziona <span id="pickerRoleLabel"></span></h3>
+    <div id="currentPlayerInPicker" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;background:#f5f5f5;border:1px solid #ddd"></div>
+    <div id="pickerPlayerList" style="display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto"></div>
+    <button onclick="closeSlotPicker()" style="margin-top:12px;padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Annulla</button>
+  </div>
+</div>
+
+<button class="fab" id="fabCopy" title="Visualizza / Copia">📋</button>
+
+<!-- Toast container -->
+<div id="toastContainer" aria-hidden="true"></div>
+
+<script src="js/csv.js"></script>
+<script src="js/app.js"></script>
+<script src="js/gk-modal.js"></script>
+<script src="js/slots.js"></script>
+<script src="js/mobile-slots.js"></script>
+<script src="js/picker.js"></script>
+<script src="js/dragdrop.js"></script>
+<script src="js/output.js"></script>
+</body>
+</html>

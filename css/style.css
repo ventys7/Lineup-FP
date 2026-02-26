@@ -1,0 +1,138 @@
+:root{
+  --primary:#2b0040;
+  --accent:#00ff85;
+  --muted:#6b6f76;
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --radius:12px;
+  --shadow: 0 6px 20px rgba(20,20,30,0.06);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+  background:linear-gradient(180deg,#f6f8fb,#eef2f7 60%);
+  color:#111;
+}
+/* Design tidy: estratte alcune proprietà inline in CSS per mantenere il design invariato */
+/* classi aggiunte per ridurre inline-styles */
+.auto-right{ margin-left:auto; display:flex; gap:8px; }
+.ml-auto{ margin-left:auto; }
+.auto-end{ margin-top:auto; display:flex; justify-content:flex-end; }
+.mt-8{ margin-top:8px; }
+.mt-12{ margin-top:12px; }
+.font-600{ font-weight:600; }
+header{
+  background:linear-gradient(90deg,var(--primary),#5a006f);
+  color:#fff;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  box-shadow:0 6px 18px rgba(30,10,40,0.15);
+  position:sticky; top:0; z-index:120;
+}
+.logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);color:#fff;font-weight:700;}
+.container{max-width:1200px;margin:18px auto;padding:0 16px;}
+.controls{display:flex;gap:12px;align-items:center;background:var(--card);padding:12px;border-radius:12px;box-shadow:var(--shadow);flex-wrap:wrap;}
+select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer;font-size:0.95rem;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;}
+.column{background:var(--card);border-radius:12px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.column h2{margin:0 0 8px 0;font-size:1.05rem}
+.roster-list,.starters-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.player-card{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #f0f0f2;cursor:pointer}
+.player-card:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,0.06)}
+.player-card.selected{outline:3px solid rgba(0,255,133,0.12);background:#f8fff4}
+.player-card.disabled{opacity:0.5;cursor:not-allowed;background:#f0f0f0}
+.player-left{display:flex;align-items:center;gap:10px}
+.badge{min-width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.badge.P{background:#e6b800}.badge.D{background:#007bff}.badge.C{background:#28a745}.badge.A{background:#dc3545}
+.player-meta{font-size:0.95rem;color:var(--muted)}.player-sub{font-size:0.7rem}
+.slot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.slot{border:1px dashed #e8e8ea;padding:8px;border-radius:8px;min-height:56px;display:flex;align-items:center;gap:8px;background:#fbfcfe}
+.slot .slot-content{display:flex;gap:6px;align-items:center;width:100%}
+.slot .player-meta{color:var(--muted)}
+.slot.empty{justify-content:flex-start}
+.slot.drag-over{background:#e8f5e9;border-color:#4caf50;border-style:solid}
+.player-card.dragging{opacity:0.5}
+.fab{position:fixed;right:20px;bottom:20px;background:var(--accent);border:none;padding:12px 18px;border-radius:999px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,0.18)}
+@media (min-width:768px){.fab{display:none}}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,6,8,0.45);z-index:999}
+.modal .box{width:92%;max-width:640px;background:var(--card);padding:18px;border-radius:12px;max-height:80vh;overflow:auto}
+.modal.show{display:flex}
+
+/* Toasts */
+#toastContainer{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:10000;
+}
+.toast{
+  background:#1e1e1e;color:white;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.3);font-size:14px;opacity:0;transform:translateY(18px);
+  animation:toastIn .22s forwards;
+}
+.toast.error{background:#e74c3c}
+.toast.success{background:#2ecc71}
+@keyframes toastIn{to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateY(18px)}}
+
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.column{min-height:420px}}
+
+/* Mobile Layout */
+.mobile-section{margin-bottom:20px}
+.mobile-section .mobile-title{font-size:1rem;margin:0 0 8px 0;color:var(--primary)}
+.mobile-slot{cursor:pointer}
+
+/* Slot Picker */
+.picker-player{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#fff;border:1px solid #eee;cursor:pointer}
+.picker-player:hover{background:#f5f5f5}
+.picker-player.selected{background:#f0fff4;border:2px solid var(--accent)}
+.picker-player.in-slot{border:2px solid var(--accent);background:#f0fff4}
+.picker-player .badge{margin-right:0}
+.picker-player .player-info{flex:1;display:flex;flex-direction:column}
+.picker-player .player-info .name{font-weight:600;font-size:0.95rem}
+.picker-player .player-info .team{font-size:0.8rem;color:var(--muted)}
+.picker-remove-btn{color:#dc3545;font-weight:600;font-size:0.9rem}
+
+/* Desktop: hide mobile layout */
+@media(min-width:768px){
+  #mobileLayout{display:none !important}
+  .grid{display:grid !important}
+}
+
+/* Mobile: show mobile layout */
+@media(max-width:767px){
+  #mobileLayout{display:block !important}
+  .grid{display:none !important}
+  .slot-grid{grid-template-columns:repeat(3,1fr)}
+  .slot{min-height:48px;padding:6px}
+  
+  /* Hide Visualizza/Copia button on mobile */
+  #openModalBtn{display:none}
+  
+  /* Hide Copy button on mobile - only show Select All */
+  #copyModalBtn{display:none}
+  
+  /* More space between header and sections */
+  .mobile-section{margin-top:30px}
+  .mobile-section .mobile-title{text-align:center}
+  
+  /* Reset button as X on mobile, next to module selector */
+  .reset-btn{padding:6px 10px;font-size:1.1rem;order:-1}
+  .controls .auto-right{order:1}
+  
+  /* Center controls on mobile */
+  .controls{
+    padding:10px;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    text-align:center
+  }
+  .controls select, .controls button{padding:6px 8px;font-size:0.85rem}
+}
