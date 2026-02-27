@@ -13,6 +13,7 @@ body{
   font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
   background:linear-gradient(180deg,#f6f8fb,#eef2f7 60%);
   color:#111;
+  overflow-x:hidden;
 }
 /* Design tidy: estratte alcune proprietà inline in CSS per mantenere il design invariato */
 /* classi aggiunte per ridurre inline-styles */
@@ -22,6 +23,8 @@ body{
 .mt-8{ margin-top:8px; }
 .mt-12{ margin-top:12px; }
 .font-600{ font-weight:600; }
+.section-title-row{ display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+.reset-btn-small{ padding:4px 10px; font-size:0.8rem; border-radius:6px; border:1px solid #e6e7ea; background:transparent; cursor:pointer; }
 header{
   background:linear-gradient(90deg,var(--primary),#5a006f);
   color:#fff;
@@ -31,13 +34,35 @@ header{
   justify-content:center;
   gap:12px;
   box-shadow:0 6px 18px rgba(30,10,40,0.15);
-  position:sticky; top:0; z-index:120;
+  position:sticky; top:0; z-index:300;
 }
-.logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);color:#fff;font-weight:700;}
-.container{max-width:1200px;margin:18px auto;padding:0 16px;}
-.controls{display:flex;gap:12px;align-items:center;background:var(--card);padding:12px;border-radius:12px;box-shadow:var(--shadow);flex-wrap:wrap;}
-select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer;font-size:0.95rem;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;}
+.logo{width:44px;height:44px;border-radius:10px;object-fit:contain;}
+.container{max-width:1200px;margin:18px auto;padding:0 16px;display:flex;gap:16px;align-items:stretch}
+.content-wrapper{flex:1;min-width:0;display:flex;flex-direction:column}
+.controls{display:flex;gap:12px;align-items:center;background:var(--card);padding:12px;border-radius:12px;box-shadow:var(--shadow);flex-wrap:wrap}
+select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer;font-size:0.95rem}
+.grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:14px;width:100%}
+
+/* Roster Drawer */
+.roster-drawer{width:0;background:var(--card);box-shadow:-4px 0 20px rgba(0,0,0,0.1);transition:width 0.3s ease;z-index:200;display:flex;flex-direction:column;visibility:hidden}
+.roster-drawer.open{width:50%;max-width:500px;visibility:visible}
+.roster-drawer-inner{flex:1;overflow-y:auto;padding:0 14px}
+.roster-drawer-header{position:sticky;top:0;background:var(--card);display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid #eee;z-index:10}
+.roster-drawer-header h2{margin:0;font-size:1.05rem}
+.close-roster-btn{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer;font-size:1rem}
+.toggle-roster-btn{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer;font-size:0.95rem}
+
+/* Desktop: smaller drawer on laptop screens */
+@media(min-width:768px) and (max-width:1200px){
+  .roster-drawer.open{width:40%;max-width:400px}
+}
+
+@media(max-width:767px){
+  .content-wrapper{display:block}
+  .container{display:block}
+  .roster-drawer{position:fixed;right:0;top:80px;height:calc(100vh - 80px);visibility:hidden;z-index:250;width:85%;background:var(--card);box-shadow:-4px 0 20px rgba(0,0,0,0.1);display:flex;flex-direction:column}
+  .roster-drawer.open{visibility:visible;width:85%}
+}
 .column{background:var(--card);border-radius:12px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
 .column h2{margin:0 0 8px 0;font-size:1.05rem}
 .roster-list,.starters-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
@@ -58,9 +83,10 @@ select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;backgr
 .player-card.dragging{opacity:0.5}
 .fab{position:fixed;right:20px;bottom:20px;background:var(--accent);border:none;padding:12px 18px;border-radius:999px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,0.18)}
 @media (min-width:768px){.fab{display:none}}
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,6,8,0.45);z-index:999}
-.modal .box{width:92%;max-width:640px;background:var(--card);padding:18px;border-radius:12px;max-height:80vh;overflow:auto}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,6,8,0.45);z-index:9999}
+.modal .box{width:92%;max-width:640px;background:var(--card);padding:18px;border-radius:12px;max-height:80vh;overflow-y:auto}
 .modal.show{display:flex}
+body.modal-open{overflow:hidden !important;touch-action:none !important}
 
 /* Toasts */
 #toastContainer{
@@ -88,6 +114,109 @@ select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;backgr
 .mobile-section .mobile-title{font-size:1rem;margin:0 0 8px 0;color:var(--primary)}
 .mobile-slot{cursor:pointer}
 
+/* Switch Section */
+.switch-section{
+  margin-top:16px;
+  padding:14px;
+  background:linear-gradient(180deg,#f8f9fa,#fff);
+  border:1px solid #e8e8ea;
+  border-radius:10px;
+}
+.switch-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+.switch-plus-btn{
+  padding:4px 10px;
+  font-size:0.8rem;
+  border-radius:6px;
+  background:transparent;
+  border:1px solid #ddd;
+  color:var(--muted);
+  cursor:pointer;
+}
+.switch-plus-btn.active{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+}
+.switch-container{
+  display:flex;
+  gap:12px;
+}
+.switch-picker-wrapper{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  align-items:center;
+}
+.switch-picker-wrapper label{
+  font-size:0.75rem;
+  color:var(--muted);
+  font-weight:500;
+}
+.switch-slot{
+  width:100%;
+  padding:10px;
+  border:1px dashed #ddd;
+  border-radius:8px;
+  background:#fafafa;
+  cursor:pointer;
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.2s;
+}
+.switch-slot:hover{
+  border-color:var(--primary);
+  background:#f0f0f5;
+}
+.switch-slot.has-player{
+  border-style:solid;
+  border-color:var(--accent);
+  background:#f0fff4;
+}
+.switch-slot-content{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+}
+.switch-slot-content .badge{
+  min-width:28px;
+  height:28px;
+  font-size:0.75rem;
+}
+.switch-slot-content .player-name{
+  font-size:0.85rem;
+  font-weight:500;
+  color:#111;
+}
+.switch-slot-placeholder{
+  color:#aaa;
+  font-size:1.2rem;
+}
+.switch-clear-btn{
+  margin-top:4px;
+  padding:4px 8px;
+  border-radius:4px;
+  border:1px solid #ddd;
+  background:#fff;
+  color:#dc3545;
+  cursor:pointer;
+  font-weight:600;
+  font-size:0.75rem;
+}
+
+/* Mobile Switch */
+.mobile-switch{
+  margin-top:20px;
+}
+
 /* Slot Picker */
 .picker-player{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#fff;border:1px solid #eee;cursor:pointer}
 .picker-player:hover{background:#f5f5f5}
@@ -103,6 +232,7 @@ select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;backgr
 @media(min-width:768px){
   #mobileLayout{display:none !important}
   .grid{display:grid !important}
+  .roster-drawer{display:flex !important}
 }
 
 /* Mobile: show mobile layout */
@@ -112,8 +242,16 @@ select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;backgr
   .slot-grid{grid-template-columns:repeat(3,1fr)}
   .slot{min-height:48px;padding:6px}
   
-  /* Hide Visualizza/Copia button on mobile */
+  /* Hide buttons on mobile */
   #openModalBtn{display:none}
+  #resetBtn{display:none}
+  #toggleRosterBtn{display:none}
+  
+  /* Mobile title row */
+  .mobile-title-row{display:flex;justify-content:center;align-items:center;margin-bottom:8px;position:relative}
+  .mobile-title-row .mobile-title{margin:0;text-align:center}
+  .mobile-title-row .reset-btn-mobile{position:absolute;right:0}
+  .reset-btn-mobile{padding:4px 10px;font-size:0.8rem;border-radius:6px;border:1px solid #e6e7ea;background:transparent;cursor:pointer}
   
   /* Hide Copy button on mobile - only show Select All */
   #copyModalBtn{display:none}
@@ -135,4 +273,13 @@ select,button{padding:8px 12px;border-radius:8px;border:1px solid #e6e7ea;backgr
     text-align:center
   }
   .controls select, .controls button{padding:6px 8px;font-size:0.85rem}
+  
+  /* Center modal buttons on mobile */
+  #slotPickerModal .box button,
+  #gkChoiceModal .box button,
+  #switchStarterModal .box button,
+  #switchBenchModal .box button{
+    display:block;
+    margin:12px auto 0;
+  }
 }

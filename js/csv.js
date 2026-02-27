@@ -93,6 +93,9 @@ async function loadCSV(){
     if(window.innerWidth < 768 && typeof renderMobileSlots === 'function'){
       renderMobileSlots();
     }
+    if(typeof updateSwitchUI === 'function'){
+      setTimeout(() => updateSwitchUI(), 100);
+    }
   }catch(err){
     console.error("CSV load error", err);
     document.getElementById("managerSelect").innerHTML = "<option>Errore caricamento</option>";

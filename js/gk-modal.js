@@ -1,6 +1,5 @@
 /* STATE */
 let pendingGkIndex = null;
-let disabledBlocks = new Set(); // Blocchi disabilitati (altro blocco non selezionabile)
 
 /* Funzioni per popup scelta portiere */
 function showGkChoiceModal(blockName, selectedGk, clickedIndex){
@@ -31,6 +30,7 @@ function showGkChoiceModal(blockName, selectedGk, clickedIndex){
   modal.classList.add("show");
   modal.setAttribute("aria-hidden", "false");
   pendingGkIndex = clickedIndex;
+  setModalOpen(true);
 }
 
 function confirmGkSelection(index){
@@ -64,4 +64,5 @@ function closeGkModal(){
   modal.classList.remove("show");
   modal.setAttribute("aria-hidden", "true");
   pendingGkIndex = null;
+  setModalOpen(false);
 }

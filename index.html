@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>PianginaCUP</title>
+<link rel="icon" type="image/png" href="fantacalcio logo.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,64 +14,114 @@
 </header>
 
 <main class="container">
-  <div class="controls">
-    <select id="managerSelect"><option>Caricamento…</option></select>
-    <select id="moduleSelect">
-      <option value="343">3-4-3</option>
-      <option value="352">3-5-2</option>
-      <option value="433">4-3-3</option>
-      <option value="442">4-4-2</option>
-      <option value="451">4-5-1</option>
-      <option value="532">5-3-2</option>
-      <option value="541">5-4-1</option>
-    </select>
-    <div class="auto-right">
-      <button id="resetBtn" class="reset-btn">Reset</button>
+  <div class="content-wrapper">
+    <div class="controls">
+      <select id="managerSelect"><option>Caricamento…</option></select>
+      <button id="toggleRosterBtn" class="toggle-roster-btn">Rosa</button>
+      <select id="moduleSelect">
+        <option value="343">3-4-3</option>
+        <option value="352">3-5-2</option>
+        <option value="433">4-3-3</option>
+        <option value="442">4-4-2</option>
+        <option value="451">4-5-1</option>
+        <option value="532">5-3-2</option>
+        <option value="541">5-4-1</option>
+      </select>
       <button id="openModalBtn">Visualizza / Copia</button>
     </div>
-  </div>
 
-  <div class="grid">
+    <div class="grid">
     <section class="column">
-      <h2>La tua Rosa</h2>
-      <div id="roster" class="roster-list" aria-live="polite"></div>
-    </section>
-
-    <section class="column">
-      <div class="mt-8 font-600">Titolari <span id="starterCount" style="color:var(--muted)">(0/11)</span></div>
-      <div class="slot-grid" id="startersSlots" aria-live="polite">
-        <!-- Slot titolari (in base al modulo) -->
+      <div class="section-title-row">
+        <span class="mt-8 font-600">Titolari <span id="starterCount" style="color:var(--muted)">(0/11)</span></span>
+        <button id="resetBtn" class="reset-btn-small">Reset</button>
       </div>
+      <div class="slot-grid" id="startersSlots" style="display:none" aria-live="polite"></div>
 
       <div class="mt-12 font-600">Panchina <span id="benchCount" style="color:var(--muted)">(0/11)</span></div>
-      <div class="slot-grid">
-        <div id="slot-GK1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#e6b800">P</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-GK2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#e6b800">P</div><div class="player-meta">vuoto</div></div></div>
+      <div class="slot-grid" id="benchSlots" style="display:none"></div>
 
-        <div id="slot-D1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#007bff">D</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-D2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#007bff">D</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-D3" class="slot empty"><div class="slot-content"><div class="badge" style="background:#007bff">D</div><div class="player-meta">vuoto</div></div></div>
-
-        <div id="slot-C1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#28a745">C</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-C2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#28a745">C</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-C3" class="slot empty"><div class="slot-content"><div class="badge" style="background:#28a745">C</div><div class="player-meta">vuoto</div></div></div>
-
-        <div id="slot-A1" class="slot empty"><div class="slot-content"><div class="badge" style="background:#dc3545">A</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-A2" class="slot empty"><div class="slot-content"><div class="badge" style="background:#dc3545">A</div><div class="player-meta">vuoto</div></div></div>
-        <div id="slot-A3" class="slot empty"><div class="slot-content"><div class="badge" style="background:#dc3545">A</div><div class="player-meta">vuoto</div></div></div>
+      <!-- Switch Section -->
+      <div class="switch-section" id="switchSection" style="display:none">
+        <div class="switch-header">
+          <span class="font-600">Switch</span>
+          <button id="switchPlusBtn" class="switch-plus-btn">Plus</button>
+        </div>
+        <div class="switch-container">
+          <div class="switch-picker-wrapper">
+            <label>Titolare</label>
+            <div class="switch-slot" id="switchStarterSlot">
+              <div class="switch-slot-content">
+                <span class="switch-slot-placeholder">+</span>
+              </div>
+            </div>
+            <button id="clearStarterSwitch" class="switch-clear-btn" style="display:none">✕</button>
+          </div>
+          <div class="switch-picker-wrapper">
+            <label>Panchina</label>
+            <div class="switch-slot" id="switchBenchSlot">
+              <div class="switch-slot-content">
+                <span class="switch-slot-placeholder">+</span>
+              </div>
+            </div>
+            <button id="clearBenchSwitch" class="switch-clear-btn" style="display:none">✕</button>
+          </div>
+        </div>
       </div>
     </section>
+  </div>
+  </div>
+
+  <!-- Roster Drawer -->
+  <div id="rosterDrawer" class="roster-drawer">
+    <div class="roster-drawer-header">
+      <h2>La tua Rosa</h2>
+      <button id="closeRosterBtn" class="close-roster-btn">✕</button>
+    </div>
+    <div class="roster-drawer-inner">
+      <div id="roster" class="roster-list" aria-live="polite"></div>
+    </div>
   </div>
 
   <!-- Mobile Layout -->
   <div id="mobileLayout" style="display:none">
     <div class="mobile-section">
-      <h2 class="mobile-title">Titolari <span id="mobileStarterCount" style="color:var(--muted)">(0/11)</span></h2>
+      <div class="mobile-title-row">
+        <h2 class="mobile-title">Titolari <span id="mobileStarterCount" style="color:var(--muted)">(0/11)</span></h2>
+        <button id="resetBtnMobile" class="reset-btn-mobile">Reset</button>
+      </div>
       <div class="slot-grid" id="mobileStartersSlots"></div>
     </div>
     <div class="mobile-section">
       <h2 class="mobile-title">Panchina <span id="mobileBenchCount" style="color:var(--muted)">(0/11)</span></h2>
       <div class="slot-grid" id="mobileBenchSlots"></div>
+    </div>
+    <!-- Mobile Switch Section -->
+    <div class="switch-section mobile-switch" id="mobileSwitchSection" style="display:none">
+      <div class="switch-header">
+        <span class="font-600">Switch</span>
+        <button id="switchPlusBtnMobile" class="switch-plus-btn">Plus</button>
+      </div>
+      <div class="switch-container">
+        <div class="switch-picker-wrapper">
+          <label>Titolare</label>
+          <div class="switch-slot" id="switchStarterSlotMobile">
+            <div class="switch-slot-content">
+              <span class="switch-slot-placeholder">+</span>
+            </div>
+          </div>
+          <button id="clearStarterSwitchMobile" class="switch-clear-btn" style="display:none">✕</button>
+        </div>
+        <div class="switch-picker-wrapper">
+          <label>Panchina</label>
+          <div class="switch-slot" id="switchBenchSlotMobile">
+            <div class="switch-slot-content">
+              <span class="switch-slot-placeholder">+</span>
+            </div>
+          </div>
+          <button id="clearBenchSwitchMobile" class="switch-clear-btn" style="display:none">✕</button>
+        </div>
+      </div>
     </div>
   </div>
 </main>
@@ -95,7 +146,7 @@
     <h3>Scegli il portiere</h3>
     <p style="color:var(--muted)">Blocco: <span id="gkBlockName" style="font-weight:bold"></span></p>
     <div id="gkChoices" style="display:flex;gap:10px;justify-content:center;margin:20px 0"></div>
-    <button onclick="closeGkModal()" style="padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Annulla</button>
+    <button onclick="closeGkModal()" style="padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Esci</button>
   </div>
 </div>
 
@@ -105,7 +156,25 @@
     <h3>Seleziona <span id="pickerRoleLabel"></span></h3>
     <div id="currentPlayerInPicker" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;background:#f5f5f5;border:1px solid #ddd"></div>
     <div id="pickerPlayerList" style="display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto"></div>
-    <button onclick="closeSlotPicker()" style="margin-top:12px;padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Annulla</button>
+    <button onclick="closeSlotPicker()" style="margin-top:12px;padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Esci</button>
+  </div>
+</div>
+
+<!-- Switch Starter Picker Modal -->
+<div id="switchStarterModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Seleziona titolare per switch</h3>
+    <div id="switchStarterList" style="display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto"></div>
+    <button onclick="closeSwitchStarterModal()" style="margin-top:12px;padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Esci</button>
+  </div>
+</div>
+
+<!-- Switch Bench Picker Modal -->
+<div id="switchBenchModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Seleziona panchina per switch</h3>
+    <div id="switchBenchList" style="display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto"></div>
+    <button onclick="closeSwitchBenchModal()" style="margin-top:12px;padding:8px 16px;border-radius:8px;border:1px solid #e6e7ea;background:transparent;cursor:pointer">Esci</button>
   </div>
 </div>
 
@@ -115,12 +184,22 @@
 <div id="toastContainer" aria-hidden="true"></div>
 
 <script src="js/csv.js"></script>
-<script src="js/app.js"></script>
-<script src="js/gk-modal.js"></script>
-<script src="js/slots.js"></script>
+<script src="js/state.js"></script>
+<script src="js/slots-constants.js"></script>
+<script src="js/switch-state.js"></script>
+<script src="js/switch-logic.js"></script>
+<script src="js/switch-ui.js"></script>
+<script src="js/switch-modals.js"></script>
+<script src="js/switch.js"></script>
+<script src="js/slots-logic.js"></script>
+<script src="js/slots-render.js"></script>
 <script src="js/mobile-slots.js"></script>
 <script src="js/picker.js"></script>
+<script src="js/gk-modal.js"></script>
 <script src="js/dragdrop.js"></script>
+<script src="js/roster.js"></script>
 <script src="js/output.js"></script>
+<script src="js/app-events.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

@@ -1,5 +1,30 @@
 let currentPickerSlot = null;
 
+function setupModalClickOutside(){
+  const modals = ['slotPickerModal', 'gkChoiceModal', 'switchStarterModal', 'switchBenchModal', 'outputModal'];
+  
+  modals.forEach(modalId => {
+    const modal = document.getElementById(modalId);
+    if(!modal) return;
+    
+    const box = modal.querySelector('.box');
+    if(box){
+      box.addEventListener('click', e => e.stopPropagation());
+      box.addEventListener('touchmove', e => e.stopPropagation(), {passive: false});
+    }
+    
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal){
+        if(modalId === 'slotPickerModal') closeSlotPicker();
+        else if(modalId === 'gkChoiceModal') closeGkModal();
+        else if(modalId === 'switchStarterModal') closeSwitchStarterModal();
+        else if(modalId === 'switchBenchModal') closeSwitchBenchModal();
+        else if(modalId === 'outputModal') closeModal();
+      }
+    });
+  });
+}
+
 function showSlotPicker(role, currentPlayer){
   const modal = document.getElementById('slotPickerModal');
   const roleLabel = document.getElementById('pickerRoleLabel');
@@ -48,6 +73,7 @@ function showSlotPicker(role, currentPlayer){
   
   modal.classList.add('show');
   modal.setAttribute('aria-hidden', 'false');
+  setModalOpen(true);
 }
 
 function selectFromPicker(playerIndex){
@@ -108,6 +134,7 @@ function closeSlotPicker(){
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden', 'true');
   currentPickerSlot = null;
+  setModalOpen(false);
 }
 
 function showGkChoiceModalForMobile(slotId, isStarter, currentPlayer){
@@ -147,6 +174,14 @@ function showGkChoiceModalForMobile(slotId, isStarter, currentPlayer){
     choicesDiv.appendChild(currentDiv);
     
     window.removeCurrentGk = () => {
+      if(currentPlayer && currentPlayer.gkBlock){
+        const team = db[currentManager].players;
+        const blockPlayers = team.filter(p => p.gkBlock === currentPlayer.gkBlock);
+        blockPlayers.forEach(p => {
+          const idx = team.indexOf(p);
+          selectedPlayers = selectedPlayers.filter(i => i !== idx);
+        });
+      }
       const idx = team.findIndex(p => p.n === currentPlayer.n && p.r === 'P');
       if(idx > -1 && selectedPlayers.includes(idx)){
         selectedPlayers = selectedPlayers.filter(i => i !== idx);
@@ -156,8 +191,10 @@ function showGkChoiceModalForMobile(slotId, isStarter, currentPlayer){
       delete slotAssignments['bench-GK2'];
       disabledBlocks.clear();
       closeGkModal();
+      renderRoster();
       renderMobileSlots();
       if(!isMobile) renderFormation();
+      updateSwitchUI();
     };
   }
 
@@ -187,6 +224,7 @@ function showGkChoiceModalForMobile(slotId, isStarter, currentPlayer){
   
   modal.classList.add('show');
   modal.setAttribute('aria-hidden', 'false');
+  setModalOpen(true);
 }
 
 function confirmGkSelectionMobile(index){
@@ -214,3 +252,5 @@ function confirmGkSelectionMobile(index){
   renderMobileSlots();
   if(!isMobile) renderFormation();
 }
+
+setupModalClickOutside();

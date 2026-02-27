@@ -77,11 +77,18 @@ function buildOutputText(){
     benchPlayers.forEach(p => bench.push(p));
     bench.sort((a,b)=> (roleOrder[a.r] - roleOrder[b.r]));
 
+    function getSwitchSuffix(player){
+      const idx = team.indexOf(player);
+      if(switchStarterIndex === idx && switchBenchIndex !== null) return switchPlus ? ' (s+)' : ' (s)';
+      if(switchBenchIndex === idx && switchStarterIndex !== null) return switchPlus ? ' (s+)' : ' (s)';
+      return '';
+    }
+
     let text = `⚽ **${currentManager.toUpperCase()}**\n`;
     text += `Mod: ${formattedModule}\n\n`;
 
     text += `TITOLARI:\n`;
-    starters.forEach(p => text += `▪️ ${p.n}\n`);
+    starters.forEach(p => text += `▪️ ${p.n}${getSwitchSuffix(p)}\n`);
 
     text += `\nPANCHINA:\n`;
     
@@ -104,7 +111,7 @@ function buildOutputText(){
     }
     
     bench.filter(p => p.r !== "P").forEach(p => {
-      text += `- ${p.n}\n`;
+      text += `- ${p.n}${getSwitchSuffix(p)}\n`;
     });
 
     return text;
@@ -119,12 +126,12 @@ function openModal(){
   document.getElementById("outputText").value = buildOutputText();
   const modal = document.getElementById("outputModal");
   modal.classList.add("show"); modal.setAttribute("aria-hidden","false");
-  document.body.style.overflow = "hidden";
+  setModalOpen(true);
 }
 function closeModal(){
   const modal = document.getElementById("outputModal");
   modal.classList.remove("show"); modal.setAttribute("aria-hidden","true");
-  document.body.style.overflow = "";
+  setModalOpen(false);
 }
 document.getElementById("openModalBtn").addEventListener("click", openModal);
 document.getElementById("closeModalBtn").addEventListener("click", closeModal);

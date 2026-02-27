@@ -29,6 +29,20 @@ function handleDrop(e, targetType, targetSlot){
   }
   
   const team = db[currentManager].players;
+  const player = team[playerIndex];
+  
+  // Check if GK has block - show picker with block logic
+  if(playerRole === 'P' && player.isGkBlock){
+    const slotKey = targetType + '-' + targetSlot;
+    let currentPlayer = null;
+    if(slotAssignments[slotKey] !== undefined){
+      currentPlayer = team[slotAssignments[slotKey]];
+    }
+    currentPickerSlot = {slotId: targetSlot, role:'P', isStarter: targetType === 'starter', currentPlayer};
+    showGkChoiceModalForMobile(targetSlot, targetType === 'starter', currentPlayer);
+    return;
+  }
+  
   const slotKey = targetType + '-' + targetSlot;
   
   for(const key in slotAssignments){

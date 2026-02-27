@@ -6,7 +6,14 @@ function getMobileSlotContainer(slotId, isStarter){
 }
 
 function renderMobileSlots(){
-  if(!currentManager || !db[currentManager]) return;
+  // Show empty containers if no manager selected
+  if(!currentManager || !db[currentManager]){
+    const startersContainer = document.getElementById('mobileStartersSlots');
+    const benchContainer = document.getElementById('mobileBenchSlots');
+    if(startersContainer) startersContainer.innerHTML = '';
+    if(benchContainer) benchContainer.innerHTML = '';
+    return;
+  }
   
   const module = document.getElementById("moduleSelect").value;
   const defReq = parseInt(module[0],10);
@@ -137,6 +144,7 @@ function createMobileSlot(slotId, player, isStarter){
   const div = document.createElement('div');
   div.className = 'slot mobile-slot ' + (player ? '' : 'empty');
   div.id = 'mobile-' + slotId;
+  div.style.position = 'relative';
   
   const role = slotId.startsWith('GK') ? 'P' : slotId[0];
   const color = roleColors[role];
